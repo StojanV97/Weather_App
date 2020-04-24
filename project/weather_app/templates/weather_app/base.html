@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+</head>
+<body>
+    <form class="form-inline" method="POST" action="">
+         {% csrf_token %}
+      <div class="form-group mx-sm-3 mb-2">
+        <input type="text" name="pretraga">
+       <input type="submit" name="search_city"  onclick = "this.form.action = &quot{% url 'search_city' %}&quot">
+      </div>
+
+    </form>
+    <table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Temp</th>
+      <th scope="col">Feels Like</th>
+      <th scope="col">Min</th>
+        <th scope="col">Max</th>
+        <th scope="col">Pressure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">{{ name }}</th>
+      <td>{{ temp }}</td>
+      <td>{{ feels_like }}</td>
+      <td>{{ temp_min }}</td>
+      <td>{{ temp_max }}</td>
+      <td>{{ pressure }}</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
