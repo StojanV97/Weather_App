@@ -12,5 +12,10 @@ class WeatherAppConfig(AppConfig):
     list_of_cities = []
     list_of_dates = []
     list_for_graph = []
+    display_list = 'temperature'
+    status_temp = 'red'
+    status_press = '#3477eb'
+    status_vis = '#3477eb'
+    status_hum = '#3477eb'
 
 
