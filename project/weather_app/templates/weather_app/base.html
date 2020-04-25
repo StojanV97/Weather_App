@@ -2,49 +2,193 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="path/to/chartjs/dist/Chart.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <meta charset="UTF-8">
     <title>Weather App</title>
     <style>
-        #table_tags{
+        .labela{
+            font-size: 20px;
+        }
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+            margin-top: 8px;
+            margin-right: 50px;
 
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+
+
+        footer{
+                text-align: center;
+                color: white;
+				background-color:#2a2b2b;
+                height: 56px;
+                margin-top: 32px;
+			}
+        body{
+            font-family: "Droid Sans";
+            font-size: 16px;
         }
         #header{
            background-color: #2a2b2b;
-           padding-bottom: 20px;
+           padding-bottom: 62px;
             padding-top: 20px;
+
         }
+        #button_delete{
+            height: 20px;
+            width: 20px;
+            padding-top: 0px;
+            padding-left: 6px;
+            text-align: left;
+        }
+        /* Style buttons */
+        .btn {
+          background-color: DodgerBlue; /* Blue background */
+          border: none; /* Remove borders */
+          color: white; /* White text */
+          padding: 12px 16px; /* Some padding */
+          font-size: 14px; /* Set a font size */
+          cursor: pointer; /* Mouse pointer on hover */
+          padding: 0;
+          padding-left: 5px;
+          padding-right: 5px;
+          padding-bottom: 1px;
+
+        }
+        /* Darker background on mouse-over */
+        .btn:hover {
+          background-color: RoyalBlue;
+        }
+        #empty_cell{
+            height: 50px;
+            width: 100px;
+        }
+        #search_button{
+            height: 38px;
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+        .form-inline{
+            float: right;
+            margin-right: 12px;
+        }
+        #add_city_label{
+            margin-top: 0px;
+            font-size: 30px;
+            color: white;
+            margin-right: 20px;
+            font-family: "Droid Sans";
+        }
+
+        #wh1{
+            margin-left: 50px;
+            font-family: "Droid Sans";
+            font-size: 56px;
+        }
+        #canvas{
+            margin-right: 0px;
+        }
+
+
     </style>
 </head>
 <body>
-    <div  id="header">
-        <form class="form-inline" method="POST" action="">
+    <div id="canvas" class="navbar navbar-light bg-dark">
+      <H1  id="wh1" style="color:#e8491d ">Weather Forecast</H1>
+      <form class="form-inline" method="POST" action="">
          {% csrf_token %}
-      <div class="form-group mx-sm-3 mb-2">
-        <input type="text" name="pretraga">
-       <input type="submit" name="search_city"  onclick = "this.form.action = &quot{% url 'search_city' %}&quot">
-      </div>
+        <div  class="form-group mx-sm-3 mb-2">
+            <label id="add_city_label">Add City : </label>
+        <input type="text"class="form-control" placeholder="Enter City Name" name="pretraga">
+        <input id="search_button" type="submit" name="search_city"  class="btn btn-outline-success my-2 my-sm-0" onclick = "this.form.action = &quot{% url 'search_city' %}&quot">
+        </div>
     </form>
     </div>
-    <table class="table table-striped table-dark">
+    <div>
+            <table class="table table-striped table-dark">
   <thead>
     <tr id="table_tags" style="color: #42d1f5">
         <th scope="col"></th>
-      <th scope="col">Name</th>
+      <th scope="col">City Name</th>
         <th scope="col">Time of Measurement</th>
-        <th scope="col">Temp</th>
+        <th scope="col">Temperature</th>
       <th scope="col">Feels Like</th>
-      <th scope="col">Min</th>
-        <th scope="col">Max</th>
+      <th scope="col">Min Temp.</th>
+        <th scope="col">Max Temp.</th>
         <th scope="col">Pressure</th>
         <th scope="col">Humidity</th>
       <th scope="col">Weather</th>
+        <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-
      {% for city in cities %}
     <tr>
-        <th><input type="checkbox" value=""></th>
+        <form method='POST' action="">
+            {% csrf_token %}
+                  <th> <button  name="{{ city.name }}" value="" type="submit" onclick="this.form.action = &quot{% url 'addcheck' %}&quot" class="btn"><i class="fas fa-check-circle"></i></button>
+                  </th>
+        </form>
       <th style="color: #e8491d" scope="row">{{ city.name | capfirst }}</th>
          <td>{{ city.display_stat.date}}</td>
       <td>{{ city.display_stat.temp }}</td>
@@ -57,14 +201,116 @@
         <td>
             <form method="POST" action="">
                 {% csrf_token %}
-                <input name="{{ city.name }}" value="X" type="submit" class="btn btn-outline-info"
-                       onclick="this.form.action = &quot{% url 'delete_city' %}&quot"/>
+                <button  name="{{ city.name }}" value="" type="submit" onclick="this.form.action = &quot{% url 'delete_city' %}&quot" class="btn"><i class="fa fa-trash"></i></button>
             </form>
-
         </td>
     </tr>
    {% endfor %}
+  {% for row in range %}
+      <tr id="empty_cell">
+        <th scope="col"></th>
+      <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      <th scope="col"></th>
+          <th scope="col"></th>
+    </tr>
+  {% endfor %}
   </tbody>
 </table>
+    </div>
+     <canvas id="myChart" width="400" height="80">
+     </canvas>
+    <script>
+       var canvas = document.getElementById("myChart");
+        var ctx = canvas.getContext('2d');
+        // Global Options:
+        Chart.defaults.global.defaultFontColor = 'black';
+        Chart.defaults.global.defaultFontSize = 16;
+        var lista_labela = []
+         var list_of_data = []
+                {% for el in list_for_graph %}
+                    var color = "#"+((1<<24)*Math.random()|0).toString(16)
+                 var dict1 = {
+                  "label": "{{el.name}}",
+                  "fill": false,
+                  "lineTension": 0.1,
+                  "backgroundColor": color,
+                  "borderColor": color, // The main line color
+                  "borderCapStyle": 'square',
+                  "borderDash": [], // try [5, 15] for instance
+                  "borderDashOffset": 0.0,
+                  "borderJoinStyle": 'miter',
+                  "pointBorderColor": "black",
+                  "pointBackgroundColor": "white",
+                  "pointBorderWidth": 1,
+                  "pointHoverRadius": 8,
+                  "pointHoverBackgroundColor": "yellow",
+                  "pointHoverBorderColor": "brown",
+                  "pointHoverBorderWidth": 2,
+                  "pointRadius": 4,
+                  "pointHitRadius": 1,
+                  "data": {{el.graph.temperature_list}},
+                  "spanGaps": true,
+                    }
+                list_of_data.push(dict1)
+                {% endfor %}
+        var data = {
+          labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
+          datasets: list_of_data
+        };
+        // Notice the scaleLabel at the same level as Ticks
+        var options = {
+          scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        },
+                        scaleLabel: {
+                             display: true,
+                             fontSize: 20
+                          }
+                    }]
+                }
+        };
+        // Chart declaration:
+        var myBarChart = new Chart(ctx, {
+          type: 'line',
+          data: data,
+          options: options
+        });
+    </script>
+        <footer>
+            <form method='POST' action="">
+                <label class="labela">Temperature</label>
+                    <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+                <label class="labela">Pressure</label>
+                                    <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+
+                <label class="labela">Humidity</label>
+                                    <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+                <label class="labela" >Visibility</label>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+
+            </form>
+		</footer>
+
 </body>
 </html>
