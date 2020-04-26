@@ -17,5 +17,7 @@ class WeatherAppConfig(AppConfig):
     status_press = '#3477eb'
     status_vis = '#3477eb'
     status_hum = '#3477eb'
+    range_x = 0
+    range_y = 40
 
 

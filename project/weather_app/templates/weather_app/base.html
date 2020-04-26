@@ -14,13 +14,7 @@
             margin-top: 10px;
         }
 
-        footer{
-                text-align: center;
-                color: white;
-				background-color:#2a2b2b;
-                height: 56px;
-                margin-top: 32px;
-			}
+
         body{
             font-family: "Droid Sans";
             font-size: 16px;
@@ -82,11 +76,19 @@
             font-family: "Droid Sans";
             font-size: 56px;
         }
+        footer{
+                text-align: center;
+                color: white;
+				background-color:#2a2b2b;
+                height: 58px;
+                margin-top: 0px;
+			}
         #canvas{
             margin-right: 0px;
+            padding-top: 0px;
         }
         .g{
-            margin-left: 10px;
+            margin-left: 0px;
             margin-right: 10px;
         }
         .red{
@@ -95,7 +97,12 @@
         .blue{
             background-color: #3477eb;
         }
-
+        #datum_forma{
+            margin-top: 10px;
+            float: left;
+            margin-left: 50px;
+            margin-right: -400px;
+        }
     </style>
 </head>
 <body>
@@ -170,14 +177,14 @@
   </tbody>
 </table>
     </div>
-     <canvas id="myChart" width="400" height="80">
+     <canvas id="myChart" width="400" height="90">
      </canvas>
     <script>
 
-
-       var canvas = document.getElementById("myChart");
+        var list = "{{label}}"
+        console.log(list);
+        var canvas = document.getElementById("myChart");
         var ctx = canvas.getContext('2d');
-        // Global Options:
         Chart.defaults.global.defaultFontColor = 'black';
         Chart.defaults.global.defaultFontSize = 16;
         var lista_labela = []
@@ -186,12 +193,16 @@
              var prikaz = []
                  {% if display_list == 'temperature' %}
                     prikaz = {{el.graph.temperature_list}}
+                    prikaz = prikaz.slice({{range_x}},{{range_y}} + 1)
                 {% elif display_list == 'pressure' %}
                     prikaz = {{el.graph.pressure_list}}
+                      prikaz = prikaz.slice({{range_x}},{{range_y}} + 1)
                 {% elif display_list == 'humidity' %}
                     prikaz = {{el.graph.humidity_list}}
+                      prikaz = prikaz.slice({{range_x}},{{range_y}} + 1)
                 {% else %}
                     prikaz = {{el.graph.visibility_list}}
+                      prikaz = prikaz.slice({{range_x}},{{range_y}} + 1)
                 {% endif %}
                     var color = "#"+((1<<24)*Math.random()|0).toString(16)
                  var dict1 = {
@@ -219,18 +230,24 @@
                 list_of_data.push(dict1)
                 {% endfor %}
         var data = {
-          labels: ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],
+          labels: {{label}},
           datasets: list_of_data
         };
         // Notice the scaleLabel at the same level as Ticks
         var options = {
           scales: {
+                     xAxes: [{
+                        ticks: {
+
+                            fontSize: 14
+                        }
+                    }],
                     yAxes: [{
                         ticks: {
                             beginAtZero:true
                         },
                         scaleLabel: {
-                             display: true,
+                             display: false,
                              fontSize: 20
                           }
                     }]
@@ -244,6 +261,13 @@
         });
     </script>
         <footer>
+            <form id="datum_forma" method="POST" action="">
+                {% csrf_token %}
+                <input placeholder="Date from : yyyy-mm-dd hh" type="text" name="date_from">
+                <input placeholder="Date to : yyyy-mm-dd hh " type="text" name="date_to">
+                <input type="submit" name="range_submit" onclick = "this.form.action = &quot{% url 'set_range' %}&quot">
+
+            </form>
             <form method='POST' action="">
                   {% csrf_token %}
            <div id="footer_div">
@@ -258,7 +282,9 @@
 
            </div>
             </form>
+
 		</footer>
+
 
 </body>
 </html>
