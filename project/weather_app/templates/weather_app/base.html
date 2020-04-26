@@ -103,6 +103,17 @@
             margin-left: 50px;
             margin-right: -400px;
         }
+        #add_remove_from_graph_blue{
+            background-color: #42d1f5;
+        }
+        #add_remove_from_graph_red{
+            background-color: red;
+        }
+        #alerdiv {
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -110,11 +121,17 @@
       <H1  id="wh1" style="color:#e8491d ">Weather Forecast</H1>
       <form class="form-inline" method="POST" action="">
          {% csrf_token %}
+         {% if error %}
+              <div class="alert alert-warning" role="alert">
+                  {{message}}
+                </div>
+          {% endif %}
         <div  class="form-group mx-sm-3 mb-2">
-            <label id="add_city_label">Add City : </label>
-        <input type="text"class="form-control" placeholder="Enter City Name" name="pretraga">
+
+        <input type="text"class="form-control" placeholder="Add City " name="pretraga">
         <input id="search_button" type="submit" name="search_city"  class="btn btn-outline-success my-2 my-sm-0" onclick = "this.form.action = &quot{% url 'search_city' %}&quot">
         </div>
+
     </form>
     </div>
     <div>
@@ -130,7 +147,7 @@
         <th scope="col">Max Temp.</th>
         <th scope="col">Pressure</th>
         <th scope="col">Humidity</th>
-      <th scope="col">Weather</th>
+      <th scope="col">Visibility</th>
         <th scope="col"></th>
     </tr>
   </thead>
@@ -139,10 +156,10 @@
     <tr>
         <form method='POST' action="">
             {% csrf_token %}
-                  <th> <button  name="{{ city.name }}" value="" type="submit" onclick="this.form.action = &quot{% url 'addcheck' %}&quot" class="btn"><i class="fas fa-check-circle"></i></button>
+                  <th> <button name="{{ city.name }}" value="" type="submit" onclick="this.form.action = &quot{% url 'addcheck' %}&quot" class="btn"><i class="fa fa-check"></i></button>
                   </th>
         </form>
-      <th style="color: #e8491d" scope="row">{{ city.name | capfirst }}</th>
+      <th style="color: #e8491d" scope="row" id="cityname">{{ city.name | capfirst }}</th>
          <td>{{ city.display_stat.date}}</td>
       <td>{{ city.display_stat.temp }}</td>
       <td>{{ city.display_stat.feels_like }}</td>
@@ -150,7 +167,7 @@
       <td>{{ city.display_stat.temp_max }}</td>
       <td>{{ city.display_stat.pressure }}</td>
         <td>{{ city.display_stat.humidity }}</td>
-        <td>{{ city.display_stat.weather | capfirst }}</td>
+        <td>{{ city.display_stat.clouds }}</td>
         <td>
             <form method="POST" action="">
                 {% csrf_token %}
@@ -263,21 +280,21 @@
         <footer>
             <form id="datum_forma" method="POST" action="">
                 {% csrf_token %}
-                <input placeholder="Date from : yyyy-mm-dd hh" type="text" name="date_from">
-                <input placeholder="Date to : yyyy-mm-dd hh " type="text" name="date_to">
+                   <input placeholder="Date from : {{first_dates_list}} 00" type="text" name="date_from">
+                    <input placeholder="Max date : {{last_dates_list}} 00" type="text" name="date_to">
                 <input type="submit" name="range_submit" onclick = "this.form.action = &quot{% url 'set_range' %}&quot">
 
             </form>
             <form method='POST' action="">
                   {% csrf_token %}
            <div id="footer_div">
-                 <label name="labela" for="temp" class="labela">Temperature</label>
+                 <label name="labela" for="temp" class="labela">Temperature (C)</label>
                 <input id="temp" class="btn btn-outline-success {{status_temp}} g" value="Show" type="submit" name="temperature" onclick="this.form.action = &quot{% url 'change_stats' %}&quot">
-                <label for="press" class="labela">Pressure</label>
+                <label for="press" class="labela">Pressure (Bar)</label>
                 <input id="press" class="btn btn-outline-success {{status_press}}  g" value="Show" type="submit" name="pressure" onclick="this.form.action = &quot{% url 'change_stats' %}&quot">
-                <label for="hum" class="labela">Humidity</label>
+                <label for="hum" class="labela">Humidity (%)</label>
                 <input id="hum" class="btn btn-outline-success {{status_hum}} g" value="Show" type="submit" name="humidity" onclick="this.form.action = &quot{% url 'change_stats' %}&quot">
-                <label for="vis" class="labela">Visibility</label>
+                <label for="vis" class="labela">Visibility (%)</label>
                 <input id="vis" class="btn btn-outline-success {{status_vis}}  g" value="Show" type="submit" name="visibility" onclick="this.form.action = &quot{% url 'change_stats' %}&quot">
 
            </div>

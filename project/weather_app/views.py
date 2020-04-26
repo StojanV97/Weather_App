@@ -24,20 +24,29 @@ def base(request):
     empty_cells = 4 - len(list_of_cities)
     range_x = apps.get_app_config('weather_app').range_x
     range_y = apps.get_app_config('weather_app').range_y
+    add_remove_from_graph = apps.get_app_config('weather_app').add_remove_from_graph
+    message = apps.get_app_config('weather_app').message
+    error = apps.get_app_config('weather_app').error
     labels = []
-    print(range_x)
-    print(range_y)
-
+    print(list_of_dates)
     for el in list_for_graph:
         labels = el.graph.time_list
         break
     labels = labels[range_x:range_y + 1]
     labels = mark_safe(labels)
-
-    context_variables = {'range_x': range_x, 'range_y': range_y, 'display_list': display_list, 'dates': list_of_dates,
-                         'cities': list_of_cities, 'range': range(empty_cells),
-                         'list_for_graph': list_for_graph, 'status_temp': status_temp, 'status_press': status_press,
-                         'status_hum': status_hum, 'status_vis': status_vis,'label':labels}
+    if len(list_of_dates) != 0:
+        context_variables = {'message':message,'error':error,'first_dates_list': list_of_dates[0],
+                             'last_dates_list': list_of_dates[len(list_of_dates) - 1], 'arfg': add_remove_from_graph,
+                             'range_x': range_x, 'range_y': range_y, 'display_list': display_list,
+                             'dates': list_of_dates,
+                             'cities': list_of_cities, 'range': range(empty_cells),
+                             'list_for_graph': list_for_graph, 'status_temp': status_temp, 'status_press': status_press,
+                             'status_hum': status_hum, 'status_vis': status_vis, 'label': labels}
+    else:
+        context_variables = {'message':message,'error':error,'first_dates_list':'yyyy-mm-dd hh','last_dates_list':'yyyy-mm-dd hh','arfg':add_remove_from_graph,'range_x': range_x, 'range_y': range_y, 'display_list': display_list, 'dates': list_of_dates,
+                             'cities': list_of_cities, 'range': range(empty_cells),
+                             'list_for_graph': list_for_graph, 'status_temp': status_temp, 'status_press': status_press,
+                             'status_hum': status_hum, 'status_vis': status_vis,'label':labels}
     return render(request, 'weather_app/base.html', context_variables)
 
 
@@ -45,8 +54,14 @@ def base(request):
 def search_city(request):
     url_api = 'http://api.openweathermap.org/data/2.5/forecast?q={}&appid=24fa72dcfd34b9a33c1b1c518534a45b'
     city_name = request.POST.get('pretraga')
+    if len(city_name) == 0:
+        apps.get_app_config('weather_app').message = 'City not found!'
+        apps.get_app_config('weather_app').error = True
+        return redirect('base')
     r = requests.get(url_api.format(city_name)).json()
     if r['cod'] == '404':
+        apps.get_app_config('weather_app').message = 'City not found!'
+        apps.get_app_config('weather_app').error = True
         return redirect('base')
     else:
         dict_of_dates = format_api_response(r)
@@ -65,29 +80,36 @@ def search_city(request):
         graph = initialize_graph_data(city)
         city.graph = graph
         if city in apps.get_app_config('weather_app').list_of_cities:
+            apps.get_app_config('weather_app').message = 'City already added!'
+            apps.get_app_config('weather_app').error = True
             return redirect('base')
         else:
             if len(apps.get_app_config('weather_app').list_of_cities) < 4:
                 apps.get_app_config('weather_app').list_of_cities.append(city)
+                apps.get_app_config('weather_app').error = False
         return redirect('base')
 
 
 @csrf_protect
 def addcheck(request):
+    apps.get_app_config('weather_app').error = False
     list = apps.get_app_config('weather_app').list_for_graph
     city_name = request.POST
     for city in apps.get_app_config('weather_app').list_of_cities:
         for key in city_name:
             if city.name == key:
                 if city in list:
-                    pass
+                    list.remove(city)
+                    apps.get_app_config('weather_app').add_remove_from_graph = 'add_remove_from_graph_blue'
                 else:
                     list.append(city)
+                    apps.get_app_config('weather_app').add_remove_from_graph = 'add_remove_from_graph_red'
     return redirect('base')
 
 
 @csrf_protect
 def delete_city(request):
+    apps.get_app_config('weather_app').error = False
     list = apps.get_app_config('weather_app').list_of_cities
     city_name = request.POST
     for city in apps.get_app_config('weather_app').list_of_cities:
@@ -135,6 +157,7 @@ def set_range(request):
                     if date_time_obj2 <= el_date:
                         apps.get_app_config('weather_app').range_y = x
                         break
+            apps.get_app_config('weather_app').error = False
             print(apps.get_app_config('weather_app').range_x)
             print(apps.get_app_config('weather_app').range_y)
         else:
@@ -142,6 +165,8 @@ def set_range(request):
             return redirect('base')
 
     except:
+        apps.get_app_config('weather_app').message = 'Wrong input format!'
+        apps.get_app_config('weather_app').error = True
         return redirect('base')
 
     return redirect('base')
@@ -149,6 +174,7 @@ def set_range(request):
 
 @csrf_protect
 def change_stats(request):
+    apps.get_app_config('weather_app').error = False
     if request.POST.get('temperature'):
         apps.get_app_config('weather_app').status_temp = 'red'
         apps.get_app_config('weather_app').status_press = 'blue'

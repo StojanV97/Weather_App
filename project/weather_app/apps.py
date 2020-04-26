@@ -19,5 +19,8 @@ class WeatherAppConfig(AppConfig):
     status_hum = '#3477eb'
     range_x = 0
     range_y = 40
+    add_remove_from_graph = 'add_remove_from_graph_blue'
+    error = False
+    message = ''
 
 
