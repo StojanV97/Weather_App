@@ -31,4 +31,6 @@ Front end :
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   
  Za pokretranje aplikacije potrebno je kreirati novo virtualno okruzenje sa pythonom v3.8 u kome treba instalirati django (pip install django).
- U terminalu locirajte se u folder -/projekat u kojem se nalazi manage.py skripta. Aplikaciju pokrenuti komandom python manage.py runserver
+ Nakon instalacije djanga potrebno je pokrenuti komandu 'pip install requests'
+ U terminalu locirajte se u folder -/projekat u kojem se nalazi manage.py skripta. Aplikaciju pokrenuti komandom 'python manage.py runserver'
+ 
