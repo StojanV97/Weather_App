@@ -1,5 +1,11 @@
 # HCI_Project
 
+##Task : 
+    Build simple weather web-app where user can enter city and get current weather report using Open Weather API.
+
+##Functionality : 
+    User is presented with and empty table where he can enter name of the city and get current weather reading stats for temperature, pressure, humidity, visibility and rain.       It is possible to add mulitple locations. Each of the location in the table can be added to a chart that shows change over time for temp, pressure, humidity and visibility       at given date interval.
+    
 Technology: 
 
     Python Django V.3.0.5
@@ -29,8 +35,14 @@ FrontEnd :
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="path/to/chartjs/dist/Chart.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-  
- Za pokretranje aplikacije potrebno je kreirati novo virtualno okruzenje sa pythonom v3.8 u kome treba instalirati django (pip install django).
- Nakon instalacije djanga potrebno je pokrenuti komandu 'pip install requests'
- U terminalu locirajte se u folder -/projekat u kojem se nalazi manage.py skripta. Aplikaciju pokrenuti komandom 'python manage.py runserver'
+ 
+ ##Run Locally : 
+    git clone 
+    
+    Create new virtual environment 
+    pip install django 
+    pip install requests
+    Go into ./projekat directory where manage.py script is located and run python manage.py runserver
+    
+
  
