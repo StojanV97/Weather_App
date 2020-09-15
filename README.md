@@ -5,9 +5,12 @@ Task :
 
     Build simple weather web-app where user can enter city and get current weather report using Open Weather API.
 
-##Functionality
-
-    User is presented with and empty table where he can enter name of the city and get current weather reading stats for temperature, pressure, humidity, visibility and rain.       It is possible to add mulitple locations. Each of the location in the table can be added to a chart that shows change over time for temp, pressure, humidity and visibility       at given date interval.
+## Functionality
+    User is presented with and empty table where he can enter name of the 
+    city and get current weather reading stats for temperature, pressure, humidity, visibility and rain. 
+    It is possible to add mulitple locations.
+    Each of the location in the table can be added to a chart that shows change over time for
+    temp, pressure, humidity and visibility at given date interval.
     
 Technology: 
 
